@@ -26,14 +26,15 @@ func _unhandled_key_input(event: InputEvent):
 	if event.is_action_pressed("ui_accept") && item_carried && item_carried.has_method("use"):
 		item_carried.use()
 	elif event.is_action_pressed("pickup"):
-		var overlapping_areas := hit_box_area_2d.get_overlapping_areas()
-		if overlapping_areas.size() == 1: # not handling overlapping items (yet)
-			if item_carried != null:
-				item_carried.drop()
-				item_carried = null
-			var item_to_pick_up : Node2D = overlapping_areas[0].get_parent()
-			item_to_pick_up.pickup()
-			item_carried = item_to_pick_up
+		for overlapping_area in hit_box_area_2d.get_overlapping_areas():
+			var item_to_pick_up : Node2D = overlapping_area.get_parent()
+			if item_to_pick_up != item_carried:
+				if item_carried != null:
+					item_carried.drop()
+					item_carried = null
+				item_to_pick_up.pickup()
+				item_carried = item_to_pick_up
+				break
 	elif event.is_action_pressed("drop") && item_carried != null:
 		item_carried.drop()
 		item_carried = null

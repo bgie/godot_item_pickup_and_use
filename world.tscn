@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://c6u1tu5fi8w06"]
+[gd_scene load_steps=21 format=3 uid="uid://c6u1tu5fi8w06"]
 
 [ext_resource type="Texture2D" uid="uid://dntjsgyl3uja7" path="res://assets/knight.png" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://d0sjmy3k2qvkj" path="res://player.gd" id="1_fj7yv"]
@@ -7,12 +7,81 @@
 [ext_resource type="Texture2D" uid="uid://lqcrihxqjuvb" path="res://assets/Shotguns/2Shotgun02.png" id="5_036b0"]
 [ext_resource type="Script" uid="uid://bc5p5eae4dad0" path="res://gun.gd" id="5_dwbse"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_fj7yv"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_dwbse"]
 atlas = ExtResource("1_f3sb7")
 region = Rect2(0, 0, 32, 32)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_pkg7o"]
+atlas = ExtResource("1_f3sb7")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gbfbk"]
+atlas = ExtResource("1_f3sb7")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ioo17"]
+atlas = ExtResource("1_f3sb7")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wse8f"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dwbse")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pkg7o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gbfbk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ioo17")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 4.0
+}]
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_aqk2v"]
 size = Vector2(15, 21)
+
+[sub_resource type="Animation" id="Animation_dwbse"]
+resource_name = "idle"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CarryItemMarker2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(5, 7), Vector2(5, 8)]
+}
+
+[sub_resource type="Animation" id="Animation_pkg7o"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CarryItemMarker2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(5, 7)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_gbfbk"]
+_data = {
+&"RESET": SubResource("Animation_pkg7o"),
+&"idle": SubResource("Animation_dwbse")
+}
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_036b0"]
 atlas = ExtResource("3_tlwt5")
@@ -37,8 +106,11 @@ texture_filter = 1
 [node name="Player" type="Node2D" parent="."]
 script = ExtResource("1_fj7yv")
 
-[node name="Sprite2D" type="Sprite2D" parent="Player"]
-texture = SubResource("AtlasTexture_fj7yv")
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Player"]
+sprite_frames = SubResource("SpriteFrames_wse8f")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.02294299
 
 [node name="HitBoxArea2D" type="Area2D" parent="Player"]
 
@@ -53,6 +125,12 @@ gizmo_extents = 5.0
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 zoom = Vector2(4, 4)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Player"]
+libraries = {
+&"": SubResource("AnimationLibrary_gbfbk")
+}
+autoplay = "idle"
 
 [node name="Apple" type="Node2D" parent="."]
 z_index = -1
